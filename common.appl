@@ -1,0 +1,19 @@
+name: common
+summary: OS agnostic params
+hardware:
+  cpus: 1
+  memory: 256
+  partitions:
+    "/":
+      size: 10
+    "swap":
+      size: 1
+files:
+  "/root":
+    - "script/#OS_NAME#/"
+post:
+  vmware:
+    - "sh /root/script/#OS_NAME#/postinstall.sh vmware"
+  ec2:
+    - "sh /root/script/#OS_NAME#/postinstall.sh ec2"
+

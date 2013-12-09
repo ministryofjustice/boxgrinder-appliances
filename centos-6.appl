@@ -1,0 +1,25 @@
+name: centos-6.5
+summary: A minimal Centos 6.4 base image
+version: 1
+release: 0
+appliances:
+  - common
+os:
+  name: centos
+  version: 6
+  password: esicerp
+repos:
+  - name: "dsd-yum"
+    baseurl: "http://repo0.dsd.io/custom/"
+  - name: "epel"
+    mirrorlist: "https://mirrors.fedoraproject.org/metalink?repo=epel-#OS_VERSION#&arch=#BASE_ARCH#"
+packages:
+  - openssh-server
+  - dhclient
+  - grub
+  - e2fsprogs
+  - sudo
+  - salt-minion
+post:
+  base:
+    - "rm -r /etc/localtime && cp /usr/share/zoneinfo/UTC /etc/localtime"

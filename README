@@ -1,0 +1,59 @@
+Instructions:
+
+Everything on the boxgrinder meta-appliance
+
+-- Update boxgrinder-build to 0.10.4 at least (app comes with 0.10.2)
+
+```
+yum --disablerepo=* --enablerepo=boxgrinder-* update rubygem-boxgrinder-build
+```
+
+- Get ovftool:
+
+```
+wget --quiet https://gds-boxes.s3.amazonaws.com/resources/VMware-ovftool-3.0.1-801290-lin.x86_64.bundle
+chmod +x ./VMware-ovftool-3.0.1-801290-lin.x86_64.bundle
+yes | PAGER=true ./VMware-ovftool-3.0.1-801290-lin.x86_64.bundle --required --console
+```
+
+- Copy the modified alphagov/boxgrinder-appliances to box:
+
+```
+cd boxgrinder-appliances
+```
+
+- Build the image:
+
+``
+make centos-6
+```
+
+- Copy build/appliances/x86_64/centos/6/centos-6/1.0/vmware-plugin/centos-6.5.ova off the meta-appliance
+
+- Upload to vCloudDirectory catalog following the instructions in README.mkd
+
+- "Build a new vApp..." (not vapp from catalog option) called "goldenimage-builder"
+
+- Select the "centos-6-..." image from the top half, and hit "Add", "Next"
+
+- Put it into a DEVTEST vDC
+
+- Leave with no network
+
+- Finish
+
+- Open the vApp (click on "golden-image" text)
+
+- Power on the VM 
+
+- Open up the vmrc console. If it hangs at "Waiting for eth0 IPv4" or a similar message then reboot the VM. (This seems to happen the first time only and rebooting it fixes it.
+
+- Open up VM properties and tick "Enable guest customization" on the "Guest OS Customization" tab. Save the VM settings
+
+- Go to vApp Diagram, select "Add to catalog..." from the vApp diagram tab
+
+- Name it something sensible like "centos-6.5-201312040911-cde2bde"
+
+- Delete the vApp
+
+- You can now create vapps form this template (or using the VM inside it)
