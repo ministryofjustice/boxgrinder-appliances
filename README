@@ -46,13 +46,23 @@ make centos-6
 
 - Power on the VM 
 
-- Open up the vmrc console. If it hangs at "Waiting for eth0 IPv4" or a similar message then reboot the VM. (This seems to happen the first time only and rebooting it fixes it.
+- Open up the vmrc console. If it hangs at "Waiting for eth0 IPv4" or a similar message then reboot the VM. (This seems to happen the first time only and rebooting it fixes it).
+
+- Power off the VM
 
 - Open up VM properties and tick "Enable guest customization" on the "Guest OS Customization" tab. Save the VM settings
+
+- Go to the vApps list and power off the vApp.
+
+We now need to re-add the fixed template (with Guest customization enabled) back to the catalog
 
 - Go to vApp Diagram, select "Add to catalog..." from the vApp diagram tab
 
 - Name it something sensible like "centos-6.5-201312040911-cde2bde"
+
+- Add a description like "centos-6.5 | Version: 1.0 | Built using BoxGrinder"
+
+- Make sure "Customize VM settings" is picked
 
 - Delete the vApp
 
