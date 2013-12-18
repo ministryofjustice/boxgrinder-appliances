@@ -10,10 +10,14 @@ hardware:
       size: 1
 files:
   "/root":
-    - "script/#OS_NAME#/"
+    # Copy the whole directory to the VM. Make sure this *doesn't* end with a
+    # trailing slash else we end up with /root/scripts/scripts/
+    - "script"
 post:
-  vmware:
-    - "sh /root/script/#OS_NAME#/postinstall.sh vmware"
-  ec2:
-    - "sh /root/script/#OS_NAME#/postinstall.sh ec2"
+  # '#provider#' comes from the enviroment (set by the makefile)
+  # We need to run some of these scripts before it gets converted to VMware/EC2
+  # format so it has to go in the base section. (If you can get it working so
+  # we don't need the '#provider#' interpolation please feel free)
+  base:
+    - "bash /root/script/postinstall.sh #provider# common #OS_NAME#"
 

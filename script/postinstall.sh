@@ -1,12 +1,19 @@
-#!/bin/sh
-export DEBIAN_FRONTEND=noninteractive
-export DEBIAN_PRIORITY=critical
-apt-get clean -y
-apt-get autoremove -y --purge
+#!/bin/bash
 
-# Set up the machine to regenerate its SSH host keys on boot.
-rm /etc/ssh/ssh_host_*
-touch /etc/ssh/regenerate_host_keys
+set -e
+
+[ "$1" ] || { echo "Provider type arg missing!" 1>&2; exit 2; }
+
+export provider="$1"
+shift;
+
+[ $# -gt 0 ] || { echo "Missing dir arguments. e.g. common ubuntu" 1>&2; exit 3; }
+
+base="$(dirname $0)"
+# Take every entry in $@ (argv) and prepend our current directory to it
+dirs=("${@/#/$base/}")
+
+# Create a base file that other postinstall scripts can append to
 cat >/etc/rc.local <<EOM
 #!/bin/sh -e
 #
@@ -15,36 +22,21 @@ cat >/etc/rc.local <<EOM
 # This script is executed at the end of each multiuser runlevel.
 # Make sure that the script will "exit 0" on success or any other
 # value on error.
+EOM
 
-if [ -f /etc/ssh/regenerate_host_keys ]; then
-  rm -f /etc/ssh/ssh_host_*
-  /usr/sbin/dpkg-reconfigure openssh-server
-  rm /etc/ssh/regenerate_host_keys
-fi
+# Run parts (from any sub-directory) in order:
+for f in $(find "${dirs[@]}" -name 'postinstall-[0-9]*.sh' | awk -F/ '{print $NF"/"$0}' | sort | cut -d/ -f2-)
+do
+  bash -x $f
+done
+
+cat >>/etc/rc.local <<EOM
 
 exit 0
 EOM
-chmod +x /etc/rc.local
 
-# Set up some sensible default nameservers
-cat >/etc/resolvconf/resolv.conf.d/original <<EOM
-# To change this, see /etc/resolvconf/resolv.conf.d/original
-nameserver 8.8.8.8
-nameserver 8.8.4.4
-search localdomain
-EOM
-
-# Allow ubuntu to sudo without a password
-cat >/etc/sudoers.d/ubuntu <<EOM
-ubuntu ALL=(ALL) NOPASSWD: ALL
-EOM
-chmod 0440 /etc/sudoers.d/ubuntu
-chown root /etc/sudoers.d/ubuntu
-
-cat >>/etc/sudoers <<EOM
-#includedir /etc/sudoers.d
-EOM
-
+# Clean up after ourselves
+rm -rf "$base"
 
 # And, finally, truncate any and all log files
 find /var/log/ -name "*log" -type f | xargs -I % sh -c "cat /dev/null >%"

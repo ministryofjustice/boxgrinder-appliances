@@ -2,31 +2,14 @@ name: ubuntu-precise
 summary: A minimal Precise 12.04 LTS base image
 version: 1
 release: 0
+appliances:
+  - common
 os:
   name: ubuntu
   version: precise
   password: esicerp
-hardware:
-  cpus: 1
-  memory: 256
-  partitions:
-    "/":
-      size: 10
-    "swap":
-      size: 1
 packages:
   - grub2
   - language-pack-en-base
   - openssh-server
   - ubuntu-minimal
-files:
-  "/root":
-    - "script/postinstall.sh"
-    - "script/postinstall-vmware.sh"
-    - "script/postinstall-virtualbox.sh"
-post:
-  base:
-    - "sh /root/script/postinstall.sh"
-    - "sh /root/script/postinstall-vmware.sh"
-  #virtualbox:
-  #  - "sh /root/script/postinstall-virtualbox.sh"

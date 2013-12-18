@@ -22,6 +22,8 @@ export
 	$(eval appl_file:=$<)
 	$(MAKE) $(build_dir)/$(appl_name).ova
 
+# Ubuntu plugin creates ubuntu-plugin/${name}-sda.qcow2
+# Centos plugin creates centos-plugin/$(name).sda.raw
 
 $(build_dir)/$(appl_name).vmx: $(appl_file)
 	boxgrinder-build $(plugins) -f $< -p $(provider) $(provider_args)

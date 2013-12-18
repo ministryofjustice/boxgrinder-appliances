@@ -1,4 +1,3 @@
-
 #!/bin/bash
 #
 # This installs VMware Tools from VMware's own Operating System Specific
