@@ -22,6 +22,12 @@ yes | PAGER=true ./VMware-ovftool-3.0.1-801290-lin.x86_64.bundle --required --co
 cd boxgrinder-appliances
 ```
 
+- Install a few deps
+
+```
+yum install -y PyYAML make
+```
+
 - Build the image:
 
 ``
