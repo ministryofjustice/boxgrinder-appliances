@@ -11,6 +11,9 @@ Vagrant::Config.run do |config|
 end
 
 Vagrant::VERSION >= "1.1.0" and Vagrant.configure("2") do |config|
+
+  config.vm.synced_folder ".", "/root/moj-boxgrinder-appliance", type: "nfs"
+
   # Configure for the virtualbox provider
   config.vm.provider :virtualbox do |vb, override|
     override.vm.box = BOX_NAME
